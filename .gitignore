@@ -31,3 +31,4 @@
 *.out
 *.app
 /code/ESP32/TS45ToMQTT/build
+/code/ESP32/TS45ToMQTT/.vscode
