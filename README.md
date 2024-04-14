@@ -24,11 +24,10 @@ The code for the TS45ToMQTT publisher has been implemented for the
 
 <p align="center">
   <img src="./docs/images_en/ESP32.png" width="320"/>
-  <img src="./pictures/Raspberry Pi.jpg" width="320"/>
 </p>
 
 <p>
-Please refer to the <a href="https://github.com/ClassicDIY/TS45ToMQTT/wiki">ClassicMQTT wiki</a> for more information.
+Please refer to the <a href="https://github.com/ClassicDIY/TS45ToMQTT/wiki">TS45ToMQTT wiki</a> for more information.
 </p>
 
 
