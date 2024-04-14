@@ -1,7 +1,7 @@
-# ESP32 Classic MQTT Publisher
+# ESP32 Tri-Star TS-45 MQTT Publisher
 
 <p align="center">
-<img src=https://github.com/graham22/TS45ToMQTT/blob/master/pictures/ESP32-pinout-mapping.png width=500>
+<img src=https://github.com/ClassicDIY/TS45ToMQTT/blob/main/pictures/ESP32-pinout-mapping.png width=500>
 </p>
 
 <p>
