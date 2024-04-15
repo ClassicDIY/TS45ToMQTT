@@ -19,11 +19,11 @@ Classic Monitor is NOT a product of Midnite solar, nor do they support this appl
 
 <p>
 The code for the TS45ToMQTT publisher has been implemented for the 
-<a href="./pictures/ESP32.png">ESP32 dev board</a> 
+<a href="https://github.com/ClassicDIY/TS45ToMQTT/tree/main/code/ESP32">ESP32 dev board</a> 
 </p>
 
 <p align="center">
-  <img src="./docs/images_en/ESP32.png" width="320"/>
+  <img src="./pictures/ESP32.png" width="320"/>
 </p>
 
 <p>
