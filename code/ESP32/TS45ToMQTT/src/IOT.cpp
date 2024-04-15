@@ -383,4 +383,9 @@ std::string IOT::getThingName() {
 	  return s;
 }
 
+std::string IOT::getDeviceName() {
+	 std::string s(_deviceName);
+	  return s;
+}
+
 } // namespace TS45ToMQTT

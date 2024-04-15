@@ -12,5 +12,6 @@ public:
     virtual std::string getRootTopicPrefix() = 0;
     virtual u_int getUniqueId() = 0;
     virtual std::string getThingName() = 0;
+    virtual std::string getDeviceName() = 0;
 
 };

@@ -29,6 +29,8 @@ public:
 
  protected:
     void PublishDiscovery();
+    void PublishDiscoverySub(const char *component, const char *entityName, const char *jsonElement, const char *device_class, const char *unit_of_meas, const char *icon = "");
+
  	StaticJsonDocument<4096> _root;
     IOTCallbackInterface* _pcb;
     RTUClient* _rtuClient;

@@ -117,7 +117,7 @@ void TS45::handleData(ModbusMessage response, uint32_t token)
         _root["nominalBatteryVoltage"] = ScalingFunction96(val);
 		_boilerPlateInfoRead = true;
 	}
-
+	PublishDiscovery();
   }
 }
 
@@ -135,14 +135,55 @@ void TS45::PublishDiscovery()
 {
     if (!_discoveryPublished) {
         logd("Publishing discovery for TS45");
-        // PublishDiscoverySub("sensor", "PackVoltage", "PackVoltage.Reading", "voltage", "V", "mdi:lightning-bolt");
-        // PublishDiscoverySub("sensor", "PackCurrent", "PackCurrent.Reading", "current", "A", "mdi:current-dc");
+        PublishDiscoverySub("sensor", "BatteryVoltage", "BatteryVoltage", "voltage", "V", "mdi:lightning-bolt");
+        PublishDiscoverySub("sensor", "ChargeCurrent", "ChargeCurrent", "current", "A", "mdi:current-dc");
+		PublishDiscoverySub("sensor", "HeatsinkTemperature", "HeatsinkTemperature", "temperature", "°C", "mdi:thermometer");
+		PublishDiscoverySub("sensor", "BatteryTemperature", "BatteryTemperature", "temperature", "°C", "mdi:thermometer");
         // PublishDiscoverySub("sensor", "SOC", "SOC", "battery", "%");
         // PublishDiscoverySub("sensor", "RemainingCapacity", "RemainingCapacity", "current", "Ah", "mdi:ev-station");
         // PublishTempsDiscovery();
         // PublishCellsDiscovery();
         _discoveryPublished = true;
     }
+}
+
+void TS45::PublishDiscoverySub(const char *component, const char *entity, const char *jsonElement, const char *device_class, const char *unit_of_meas, const char *icon)
+{
+	char buffer[STR_LEN];
+	StaticJsonDocument<1024> doc; // MQTT discovery
+	doc["device_class"] = device_class;
+	doc["unit_of_measurement"] = unit_of_meas;
+	doc["state_class"] = "measurement";
+
+	doc["name"] = entity;
+	if (strlen(icon) > 0) {
+		doc["icon"] = icon;
+	}
+
+	sprintf(buffer, "%s/stat/readings", _pcb->getRootTopicPrefix().c_str());
+	doc["state_topic"] = buffer;
+
+	sprintf(buffer, "ESP%X_%s", _pcb->getUniqueId(), entity);
+	doc["unique_id"] = buffer;
+	String object_id = buffer;
+
+	sprintf(buffer, "{{ value_json.%s }}", jsonElement);
+	doc["value_template"] = buffer;
+
+	sprintf(buffer, "%s/tele/LWT", _pcb->getRootTopicPrefix().c_str());
+	doc["availability_topic"] = buffer;
+    doc["pl_avail"] = "Online";
+    doc["pl_not_avail"] = "Offline";
+	JsonObject device = doc.createNestedObject("device");
+	device["name"] = _pcb->getDeviceName();
+	device["via_device"] = _pcb->getThingName();
+	device["sw_version"] = CONFIG_VERSION;
+	device["manufacturer"] = "ClassicDIY";
+	device["model"] = "TS-45";
+	sprintf(buffer, "%X_%s", _pcb->getUniqueId(), _pcb->getDeviceName().c_str());
+	device["identifiers"] = buffer;
+	sprintf(buffer, "%s/%s/%s/config", HOME_ASSISTANT_PREFIX, component, object_id.c_str());
+	_pcb->PublishMessage(buffer, doc);
 }
 
 } // namespace TS45ToMQTT

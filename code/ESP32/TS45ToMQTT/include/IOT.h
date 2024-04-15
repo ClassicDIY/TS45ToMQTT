@@ -31,6 +31,7 @@ public:
     std::string getRootTopicPrefix();
     u_int getUniqueId() { return _uniqueId;};
     std::string getThingName();
+    std::string getDeviceName();
     unsigned long PublishRate();
     void SetPublishRate(unsigned long rate);
 private:
