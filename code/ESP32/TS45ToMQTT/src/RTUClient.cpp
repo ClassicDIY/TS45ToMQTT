@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "RTUClient.h"
 
+
 namespace TS45ToMQTT
 {
 
@@ -51,6 +52,30 @@ void RTUClient::begin(RTUCallbackInterface* pcb, unsigned long baud, uint32_t co
 
 void RTUClient::run(){
     Error err = _rtu->addRequest((uint32_t)millis(), 1, READ_HOLD_REGISTER, FIRST_REGISTER, NUM_VALUES);
+    if (err!=SUCCESS) 
+    {
+        ModbusError e(err);
+        loge("Error creating request: %02X - %s\n", (int)e, (const char *)e);
+    }
+}
+
+void RTUClient::writeCoil(int coil, int val){
+    Error err = _rtu->addRequest((uint32_t)millis(), 1, WRITE_COIL, coil, val);
+    if (err!=SUCCESS) 
+    {
+        ModbusError e(err);
+        loge("Error creating request: %02X - %s\n", (int)e, (const char *)e);
+    }
+}
+
+void RTUClient::deviceIdentification(){
+
+
+    ModbusMessage m;
+    Error rc = SUCCESS;
+    uint8_t aob[3] = {0x0E, 0x01, 0x00};
+    rc = m.setMessage(1, ENCAPSULATED_INTERFACE, (uint16_t)3, aob);
+    Error err = _rtu->addRequest(m, (uint32_t)4444);
     if (err!=SUCCESS) 
     {
         ModbusError e(err);

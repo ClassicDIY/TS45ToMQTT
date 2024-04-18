@@ -9,9 +9,16 @@
 #include "IOT.h"
 #include "TS45.h"
 
+#ifdef MODBUS_LOG
+// #define LOCAL_LOG_LEVEL LOG_LEVEL_DEBUG
+#undef LOCAL_LOG_LEVEL
+#include "Logging.h" // modbus logging
+#endif
+
 using namespace TS45ToMQTT;
 
 TS45ToMQTT::TS45 _ts45 = TS45ToMQTT::TS45();
+TS45ToMQTT::IOT _iot = TS45ToMQTT::IOT();
 hw_timer_t *_watchdogTimer = NULL;
 
 unsigned long _lastPublishTimeStamp = 0;
@@ -59,7 +66,7 @@ void setup()
 	Serial.begin(115200);
 	while (!Serial) {}
 	logd("Booting");
-	_iot.Init();
+	_iot.Init(&_ts45);
 	init_watchdog();
 	_lastPublishTimeStamp = millis() + WAKE_PUBLISH_RATE;
 	_ts45.begin(&_iot);

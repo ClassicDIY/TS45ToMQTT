@@ -24,3 +24,5 @@
 #define BAUDRATE 9600
 #define FIRST_REGISTER 0x0000
 #define NUM_VALUES 30
+
+#define DEVICE_ID_TOKEN 4444 // modbus read device Identification (0x2B)

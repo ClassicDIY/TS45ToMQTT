@@ -1,6 +1,6 @@
 #include "IOT.h"
 
-TS45ToMQTT::IOT _iot = TS45ToMQTT::IOT();
+
 
 namespace TS45ToMQTT
 {
@@ -102,33 +102,35 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 {
 	logd("MQTT Message arrived [%s]  qos: %d len: %d index: %d total: %d", topic, properties.qos, len, index, total);
 	printHexString(payload, len);
-
-	StaticJsonDocument<64> doc;
-	DeserializationError err = deserializeJson(doc, payload);
-	if (err) // not json!
-	{
-		logd("MQTT payload {%s} is not valid JSON!", payload);
-	}
-	else 
-	{
-		boolean messageProcessed = false;
-		if (doc.containsKey("wakePublishRate") && doc["wakePublishRate"].is<int>())
+	bool messageProcessed = _iot.ProcessCmnd(payload, len);
+	if (!messageProcessed) {
+		StaticJsonDocument<64> doc;
+		DeserializationError err = deserializeJson(doc, payload);
+		if (err) // not json!
 		{
-			int publishRate = doc["wakePublishRate"];
-			messageProcessed = true;
-			if (publishRate >= MIN_PUBLISH_RATE && publishRate <= MAX_PUBLISH_RATE)
-			{
-				_iot.SetPublishRate(doc["wakePublishRate"]);
-				logd("Wake publish rate: %d", _iot.PublishRate());
-			}
-			else
-			{
-				logd("wakePublishRate is out of rage!");
-			}
+			logd("MQTT payload {%s} is not valid JSON!", payload);
 		}
-		if (!messageProcessed)
+		else 
 		{
-			logd("MQTT Json payload {%s} not recognized!", payload);
+			boolean messageProcessed = false;
+			if (doc.containsKey("wakePublishRate") && doc["wakePublishRate"].is<int>())
+			{
+				int publishRate = doc["wakePublishRate"];
+				messageProcessed = true;
+				if (publishRate >= MIN_PUBLISH_RATE && publishRate <= MAX_PUBLISH_RATE)
+				{
+					_iot.SetPublishRate(doc["wakePublishRate"]);
+					logd("Wake publish rate: %d", _iot.PublishRate());
+				}
+				else
+				{
+					logd("wakePublishRate is out of rage!");
+				}
+			}
+			if (!messageProcessed)
+			{
+				logd("MQTT Json payload {%s} not recognized!", payload);
+			}
 		}
 	}
 }
@@ -200,8 +202,9 @@ boolean formValidator(iotwebconf::WebRequestWrapper* webRequestWrapper)
 	return valid;
 }
 
-void IOT::Init()
+void IOT::Init(MQTTCommandInterface* cmdCB)
 {
+	_cmdCB = cmdCB;
 	pinMode(FACTORY_RESET_PIN, INPUT_PULLUP);
 	_iotWebConf.setStatusPin(WIFI_STATUS_PIN);
 	_iotWebConf.setConfigPin(WIFI_AP_PIN);
@@ -344,6 +347,11 @@ unsigned long IOT::PublishRate()
 void IOT::SetPublishRate(unsigned long rate)
 {
 	_currentPublishRate = rate;
+}
+
+bool IOT::ProcessCmnd(char *payload, size_t len)
+{
+	return _cmdCB->handleCommand(payload, len);
 }
 
 

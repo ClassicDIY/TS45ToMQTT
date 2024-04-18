@@ -6,13 +6,13 @@
 #include "IOTCallbackInterface.h"
 #include "Defines.h"
 #include "RTUCallbackInterface.h"
+#include "MQTTCommandInterface.h"
 #include "RTUClient.h"
-#include "ChargeControllerInfo.h"
 
 namespace TS45ToMQTT
 {
 
-class TS45 : public RTUCallbackInterface
+class TS45 : public RTUCallbackInterface, public MQTTCommandInterface
 {
     
 public:
@@ -21,6 +21,9 @@ public:
     void begin(IOTCallbackInterface* pcb);
     void run();
     
+    //MQTTCommandInterface
+    bool handleCommand(char *payload, size_t len);
+
     //RTUCallbackInterface
     void handleData(ModbusMessage msg, uint32_t token);
 	void handleError(ModbusError error) {
@@ -41,6 +44,9 @@ private:
     bool _mqttReadingsAvailable = false;
     bool _boilerPlateInfoPublished = false;
     bool _boilerPlateInfoRead = false;
-    ChargeControllerInfo _chargeControllerInfo;
+    char _manufacturer[32];
+    char _model[32];
+    char _version[32];
+
 };
 } // namespace TS45ToMQTT

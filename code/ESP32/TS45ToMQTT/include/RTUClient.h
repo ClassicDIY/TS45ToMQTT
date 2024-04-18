@@ -14,6 +14,8 @@ class RTUClient
 	~RTUClient();
 	void begin(RTUCallbackInterface* cbi, unsigned long baud, uint32_t config, int8_t rxPin, int8_t txPin);
 	void run();
+	void writeCoil(int coil, int val);
+	void deviceIdentification();
 
  protected:
 
