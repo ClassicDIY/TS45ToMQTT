@@ -3,11 +3,7 @@
 #include "WiFi.h"
 #include "ArduinoJson.h"
 #include <EEPROM.h>
-extern "C"
-{
-#include "freertos/FreeRTOS.h"
-#include "freertos/timers.h"
-}
+
 #include "Log.h"
 #include "AsyncMqttClient.h"
 #include <IotWebConf.h>

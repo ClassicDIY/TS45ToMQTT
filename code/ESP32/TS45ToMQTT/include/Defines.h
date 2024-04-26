@@ -24,5 +24,12 @@
 #define BAUDRATE 9600
 #define FIRST_REGISTER 0x0000
 #define NUM_VALUES 30
+#define RTU_ERROR_RETRY_LIMIT 5
+#define RTU_TIMEOUT 5
 
-#define DEVICE_ID_TOKEN 4444 // modbus read device Identification (0x2B)
+#define DEVICE_ID_TOKEN 4443 // modbus read device Identification (0x2B)
+#define WRITE_COIL_TOKEN 4442 // modbus write COIL Identification (0x05)
+#define READ_COIL_TOKEN 4441 // modbus read COIL Identification (0x01)
+#define READ_HOLD_TOKEN 4440 // modbus read REGISTER Identification (0x03)
+
+// #define MQTT_MIN_FREE_MEMORY 4096

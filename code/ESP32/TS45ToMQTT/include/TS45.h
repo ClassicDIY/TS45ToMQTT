@@ -26,15 +26,12 @@ public:
 
     //RTUCallbackInterface
     void handleData(ModbusMessage msg, uint32_t token);
-	void handleError(ModbusError error) {
-        loge("Error response: %02X - %s\n", (int)error, (const char *)error);
-    };
+	void handleError(ModbusError error, uint32_t token);
 
  protected:
     void PublishDiscovery();
-    void PublishDiscoverySub(const char *component, const char *entityName, const char *jsonElement, const char *device_class, const char *unit_of_meas, const char *icon = "");
+    void PublishEntity(const char *subtopic, const char *device_class, const char *state_class, const char *entityName, const char *unit_of_meas = "", const char *icon = "");
 
- 	StaticJsonDocument<4096> _root;
     IOTCallbackInterface* _pcb;
     RTUClient* _rtuClient;
 
@@ -44,9 +41,13 @@ private:
     bool _mqttReadingsAvailable = false;
     bool _boilerPlateInfoPublished = false;
     bool _boilerPlateInfoRead = false;
+    bool _deviceInfoInfoRead = false;
+    uint8_t _lastCoilRead = 0xFF;
     char _manufacturer[32];
-    char _model[32];
-    char _version[32];
-
+    char _model[16];
+    char _version[16];
+    int _rtuDeviceIDErrorCount = 0;
+    uint16_t _controlMode = 0;
 };
+
 } // namespace TS45ToMQTT

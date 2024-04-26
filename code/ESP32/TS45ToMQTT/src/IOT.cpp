@@ -1,7 +1,5 @@
 #include "IOT.h"
 
-
-
 namespace TS45ToMQTT
 {
 AsyncMqttClient _mqttClient;
@@ -73,7 +71,7 @@ void WiFiEvent(WiFiEvent_t event)
 {
 	logd("[WiFi-event] event: %d", event);
 	String s;
-	StaticJsonDocument<128> doc;
+	JsonDocument doc;
 	switch (event)
 	{
 	case SYSTEM_EVENT_STA_GOT_IP:
@@ -104,7 +102,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 	printHexString(payload, len);
 	bool messageProcessed = _iot.ProcessCmnd(payload, len);
 	if (!messageProcessed) {
-		StaticJsonDocument<64> doc;
+		JsonDocument doc;
 		DeserializationError err = deserializeJson(doc, payload);
 		if (err) // not json!
 		{
@@ -304,7 +302,7 @@ boolean IOT::Run()
 		{
 			String s = Serial.readStringUntil('}');
 			s += "}";
-			StaticJsonDocument<128> doc;
+			JsonDocument doc;
 			DeserializationError err = deserializeJson(doc, s);
 			if (err)
 			{
@@ -377,7 +375,7 @@ void IOT::PublishMessage(const char* topic, JsonDocument& payload) {
 	serializeJson(payload, s);
 	if (_mqttClient.publish(topic, 0, false, s.c_str(), s.length()) == 0)
 	{
-		loge("**** Configuration payload exceeds MAX MQTT Packet Size");
+		loge("**** Payload exceeds MAX MQTT Packet Size");
 	}
 }
 

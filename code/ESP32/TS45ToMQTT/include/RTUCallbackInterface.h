@@ -6,5 +6,5 @@ class RTUCallbackInterface
 {
 public:
     virtual void handleData(ModbusMessage msg, uint32_t token) = 0;
-	virtual void handleError(ModbusError error) = 0;
+	virtual void handleError(ModbusError error, uint32_t token) = 0;
 };
