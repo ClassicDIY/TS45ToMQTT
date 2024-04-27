@@ -18,7 +18,6 @@ RTUClient::~RTUClient()
     delete _rtu;
 }
 
-
 // Define an onError handler function to receive error responses
 // Arguments are the error code returned and a user-supplied token to identify the causing request
 void handleError(Error error, uint32_t token) 
@@ -42,8 +41,6 @@ void RTUClient::begin(RTUCallbackInterface* pcb, unsigned long baud, uint32_t co
     _rtu->onDataHandler(&handleData);
     // - provide onError handler function
     _rtu->onErrorHandler(&handleError);
-    // Set message timeout
-    _rtu->setTimeout(RTU_TIMEOUT);
     // Start ModbusRTU background task
     _rtu->begin(Serial2);
     while (!Serial2) {}
@@ -75,8 +72,6 @@ void RTUClient::writeCoil(int coil, int val){
 }
 
 void RTUClient::deviceIdentification(){
-
-
     ModbusMessage m;
     Error rc = SUCCESS;
     uint8_t aob[3] = {0x0E, 0x01, 0x00};
@@ -88,7 +83,5 @@ void RTUClient::deviceIdentification(){
         loge("Error creating request: %02X - %s\n", (int)e, (const char *)e);
     }
 }
-
-
 
 } // namespace TS45ToMQTT
