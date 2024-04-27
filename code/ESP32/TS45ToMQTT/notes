@@ -1,5 +1,2 @@
-Entity sensor.cc1_controlmode 
-(<class 'homeassistant.components.mqtt.sensor.MqttSensor'>)
- is using native unit of measurement 'None' which is not a valid unit for the device class ('battery') it is using; expected one of ['%']; 
-Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/home-assistant/core/issues?q=is%3Aopen+is%3Aissue+label%3A%22integration%3A+mqtt%22
+
 
