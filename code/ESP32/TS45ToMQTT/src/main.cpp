@@ -20,7 +20,6 @@ TS45ToMQTT::IOT _iot = TS45ToMQTT::IOT();
 hw_timer_t *_watchdogTimer = NULL;
 
 unsigned long _lastPublishTimeStamp = 0;
-unsigned long _lastModbusPollTimeStamp = 0;
 unsigned long _currentPublishRate = WAKE_PUBLISH_RATE; // rate currently being used
 unsigned long _wakePublishRate = WAKE_PUBLISH_RATE; // wake publish rate set by config or mqtt command
 boolean _stayAwake = false;
@@ -55,7 +54,6 @@ void Wake()
 {
 	_currentPublishRate = _wakePublishRate;
 	_lastPublishTimeStamp = 0;
-	_lastModbusPollTimeStamp = 0;
 	_publishCount = 0;
 }
 

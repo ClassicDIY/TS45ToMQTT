@@ -25,6 +25,7 @@
 #define FIRST_REGISTER 0x0000
 #define NUM_VALUES 30
 #define RTU_ERROR_RETRY_LIMIT 5
+#define GoOfflineAfterNoRTUResponse 120000
 
 #define DEVICE_ID_TOKEN 4443 // modbus read device Identification (0x2B)
 #define WRITE_COIL_TOKEN 4442 // modbus write COIL Identification (0x05)

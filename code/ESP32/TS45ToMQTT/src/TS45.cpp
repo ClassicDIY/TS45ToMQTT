@@ -117,6 +117,7 @@ std::vector<std::string> stateLookup_loadLighting = {
 void TS45::handleData(ModbusMessage response, uint32_t token) 
 {
 	logd("handleData:Token %d", token);
+	_lastModbusResponseTimeStamp =  millis();
 	// logd("Response: serverID=%d, FC=%d, Token=%08X, length=%d: \n", response.getServerID(), response.getFunctionCode(), token, response.size());
 	JsonDocument doc;
 	switch (token) {
@@ -358,6 +359,7 @@ void TS45::run() {
 	} else {
     	_rtuClient->run();
 	}
+	_pcb->PublishTelemetery((_lastModbusResponseTimeStamp + GoOfflineAfterNoRTUResponse) > millis());
 }
 
 void TS45::PublishDiscovery()

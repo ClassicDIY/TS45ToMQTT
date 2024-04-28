@@ -25,6 +25,7 @@ public:
     void Publish(const char *subtopic, const char *value, boolean retained = false);
     void Publish(const char *topic, float value, boolean retained = false);
     void PublishMessage(const char* topic, JsonDocument& payload);
+    void PublishTelemetery(bool online);
     std::string getRootTopicPrefix();
     u_int getUniqueId() { return _uniqueId;};
     std::string getThingName();
@@ -36,6 +37,7 @@ private:
 
     MQTTCommandInterface* _cmdCB;
     bool _clientsConfigured = false;
+    bool _lastTelemetery = true; 
     unsigned long _currentPublishRate;
     u_int _uniqueId = 0; // unique id from mac address NIC segment
 };

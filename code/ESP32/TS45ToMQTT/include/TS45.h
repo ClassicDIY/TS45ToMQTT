@@ -37,6 +37,7 @@ public:
 
 private:
     uint8_t lastRead[2048];
+    unsigned long _lastModbusResponseTimeStamp = 0;
     bool _discoveryPublished = false;
     bool _mqttReadingsAvailable = false;
     bool _boilerPlateInfoPublished = false;

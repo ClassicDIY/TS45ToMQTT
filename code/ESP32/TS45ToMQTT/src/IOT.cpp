@@ -379,6 +379,13 @@ void IOT::PublishMessage(const char* topic, JsonDocument& payload) {
 	}
 }
 
+void IOT::PublishTelemetery(bool online) {
+	if (_lastTelemetery != online){
+		_lastTelemetery = online;
+		_mqttClient.publish(_willTopic, 0, true, online ? "Online": "Offline", 7);
+	}
+}
+
 std::string IOT::getRootTopicPrefix() {
 	std::string s(_rootTopicPrefix); 
 	return s; 
