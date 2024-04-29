@@ -348,7 +348,7 @@ bool TS45::handleCommand(char *payload, size_t len)
 
 void TS45::begin(IOTCallbackInterface* pcb) { 
     _pcb = pcb; 
-    _rtuClient->begin(this, BAUDRATE, SERIAL_8N1, RXPIN, TXPIN);
+    _rtuClient->begin(this, BAUDRATE, SERIAL_8N2, RXPIN, TXPIN);
 	_rtuDeviceIDErrorCount = 0;
     logd("TS45 ready");
 }
