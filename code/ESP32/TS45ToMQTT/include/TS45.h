@@ -49,6 +49,7 @@ private:
     char _version[16];
     int _rtuDeviceIDErrorCount = 0;
     uint16_t _controlMode = 0;
+    int _rtuSuccededResponseCount = 0;
 };
 
 } // namespace TS45ToMQTT

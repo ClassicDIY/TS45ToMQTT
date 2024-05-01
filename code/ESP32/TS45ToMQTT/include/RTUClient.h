@@ -22,6 +22,7 @@ class RTUClient
  protected:
 
     ModbusClientRTU* _rtu;
+	int _toggle = 0;
 };
 
 } // namespace TS45ToMQTT

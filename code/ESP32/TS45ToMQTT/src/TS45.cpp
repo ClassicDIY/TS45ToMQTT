@@ -30,6 +30,7 @@ void printHex(int num) {
 void TS45::handleError(ModbusError error, uint32_t token) 
 {
 	loge("RTU Error for token %d: %02X - %s", token, (int)error, (const char *)error);
+	_rtuSuccededResponseCount = 0;
 	if (token == DEVICE_ID_TOKEN) {
 		_rtuDeviceIDErrorCount++;
 		if (_rtuDeviceIDErrorCount == RTU_ERROR_RETRY_LIMIT) { // give uo trying to get device ID, move on...
@@ -119,7 +120,8 @@ std::vector<std::string> stateLookup_loadLighting = {
 
 void TS45::handleData(ModbusMessage response, uint32_t token) 
 {
-	logi("FC=%d, Token=%d, length=%d", response.getFunctionCode(), token, response.size());
+	_rtuSuccededResponseCount++;
+	logi("FC=%d, Token=%d, length=%d, SuccededResponseCount=%d", response.getFunctionCode(), token, response.size(), _rtuSuccededResponseCount);
 	_lastModbusResponseTimeStamp =  millis();
 	JsonDocument doc;
 	switch (token) {

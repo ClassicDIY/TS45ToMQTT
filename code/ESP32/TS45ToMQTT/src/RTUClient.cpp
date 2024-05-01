@@ -51,17 +51,20 @@ void RTUClient::begin(RTUCallbackInterface* pcb, unsigned long baud, uint32_t co
 void RTUClient::run(){
     logd("Run, pending requests %d", _rtu->pendingRequests());
     if (_rtu->pendingRequests() == 0) {
-        Error err = _rtu->addRequest((uint32_t)READ_HOLD_TOKEN, 1, READ_HOLD_REGISTER, FIRST_REGISTER, NUM_VALUES);
-        if (err!=SUCCESS) 
-        {
-            ModbusError e(err);
-            loge("Error creating READ_HOLD_REGISTER request: %02X - %s\n", (int)e, (const char *)e);
-        }
-        err = _rtu->addRequest((uint32_t)READ_COIL_TOKEN, 1, READ_COIL, 0, 8);
-        if (err!=SUCCESS) 
-        {
-            ModbusError e(err);
-            loge("Error creating READ_COIL request: %02X - %s\n", (int)e, (const char *)e);
+        if (_toggle++ & 1) {
+            Error err = _rtu->addRequest((uint32_t)READ_HOLD_TOKEN, 1, READ_HOLD_REGISTER, FIRST_REGISTER, NUM_VALUES);
+            if (err!=SUCCESS) 
+            {
+                ModbusError e(err);
+                loge("Error creating READ_HOLD_REGISTER request: %02X - %s\n", (int)e, (const char *)e);
+            }
+        } else {
+            Error err = _rtu->addRequest((uint32_t)READ_COIL_TOKEN, 1, READ_COIL, 0, 8);
+            if (err!=SUCCESS) 
+            {
+                ModbusError e(err);
+                loge("Error creating READ_COIL request: %02X - %s\n", (int)e, (const char *)e);
+            }
         }
     }
 }
