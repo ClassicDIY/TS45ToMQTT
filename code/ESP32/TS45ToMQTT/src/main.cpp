@@ -8,7 +8,7 @@
 #include "TS45.h"
 
 #ifdef MODBUS_LOG
-// #define LOCAL_LOG_LEVEL LOG_LEVEL_DEBUG
+#define LOCAL_LOG_LEVEL LOG_LEVEL_DEBUG
 #undef LOCAL_LOG_LEVEL
 #include "Logging.h" // modbus logging
 #endif

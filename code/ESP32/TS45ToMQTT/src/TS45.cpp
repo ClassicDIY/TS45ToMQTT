@@ -34,7 +34,10 @@ void TS45::handleError(ModbusError error, uint32_t token)
 		_rtuDeviceIDErrorCount++;
 		if (_rtuDeviceIDErrorCount == RTU_ERROR_RETRY_LIMIT) { // give uo trying to get device ID, move on...
 			_deviceInfoInfoRead = true;
+			_rtuClient->reset();
 		}
+	} else {
+		_rtuClient->reset();
 	}
 }
 
@@ -116,13 +119,15 @@ std::vector<std::string> stateLookup_loadLighting = {
 
 void TS45::handleData(ModbusMessage response, uint32_t token) 
 {
-	logd("handleData:Token %d", token);
+	logi("FC=%d, Token=%d, length=%d", response.getFunctionCode(), token, response.size());
 	_lastModbusResponseTimeStamp =  millis();
-	// logd("Response: serverID=%d, FC=%d, Token=%08X, length=%d: \n", response.getServerID(), response.getFunctionCode(), token, response.size());
 	JsonDocument doc;
 	switch (token) {
 		case DEVICE_ID_TOKEN: //Read Device Identification
 		{
+			#ifdef MODBUS_LOG // modbus logging enabled?
+				printHexString((char*)response.data(), response.size());
+			#endif
 			auto it = response.begin();
 			if (response.size() > 9) {
 				it+=9;
@@ -149,8 +154,9 @@ void TS45::handleData(ModbusMessage response, uint32_t token)
 			break;
 		}
 		case READ_COIL_TOKEN:
-			// logd("Response: serverID=%d, FC=%d, Token=%08X, length=%d: \n", response.getServerID(), response.getFunctionCode(), token, response.size());
-			// printHexString((char*)response.data(), response.size());
+			#ifdef MODBUS_LOG // modbus logging enabled?
+				printHexString((char*)response.data(), response.size());
+			#endif
 			if (response.size() >= 4) {
 				if (response.data()[3] != _lastCoilRead) { 
 					doc["equalize"] = response.data()[3] & 0x01 ? true : false;
@@ -164,7 +170,6 @@ void TS45::handleData(ModbusMessage response, uint32_t token)
 			break;
   		case READ_HOLD_TOKEN:
 			#ifdef MODBUS_LOG // modbus logging enabled?
-				printHexString((char*)response.data(), response.size());
 				char *ptr = (char*)response.data();
 				for (int i = 0; i < response.size(); i++) {
 					if (ptr[i] != lastRead[i]) {
@@ -354,6 +359,7 @@ void TS45::begin(IOTCallbackInterface* pcb) {
 }
 
 void TS45::run() {
+	logd("Run, _deviceInfoInfoRead %d", _deviceInfoInfoRead);
 	if (_deviceInfoInfoRead == false) {
 		_rtuClient->deviceIdentification();
 	} else {

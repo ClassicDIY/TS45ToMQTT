@@ -22,9 +22,9 @@ RTUClient::~RTUClient()
 // Arguments are the error code returned and a user-supplied token to identify the causing request
 void handleError(Error error, uint32_t token) 
 {
-  // ModbusError wraps the error code and provides a readable error message for it
-  ModbusError me(error);
-  _cbi->handleError(me, token);
+    // ModbusError wraps the error code and provides a readable error message for it
+    ModbusError me(error);
+    _cbi->handleError(me, token);
 }
 
 void handleData(ModbusMessage response, uint32_t token) 
@@ -41,6 +41,7 @@ void RTUClient::begin(RTUCallbackInterface* pcb, unsigned long baud, uint32_t co
     _rtu->onDataHandler(&handleData);
     // - provide onError handler function
     _rtu->onErrorHandler(&handleError);
+    _rtu->skipLeading0x00();
     // Start ModbusRTU background task
     _rtu->begin(Serial2);
     while (!Serial2) {}
@@ -48,21 +49,25 @@ void RTUClient::begin(RTUCallbackInterface* pcb, unsigned long baud, uint32_t co
 }
 
 void RTUClient::run(){
-    Error err = _rtu->addRequest((uint32_t)READ_HOLD_TOKEN, 1, READ_HOLD_REGISTER, FIRST_REGISTER, NUM_VALUES);
-    if (err!=SUCCESS) 
-    {
-        ModbusError e(err);
-        loge("Error creating READ_HOLD_REGISTER request: %02X - %s\n", (int)e, (const char *)e);
-    }
-    err = _rtu->addRequest((uint32_t)READ_COIL_TOKEN, 1, READ_COIL, 0, 8);
-    if (err!=SUCCESS) 
-    {
-        ModbusError e(err);
-        loge("Error creating READ_COIL request: %02X - %s\n", (int)e, (const char *)e);
+    logd("Run, pending requests %d", _rtu->pendingRequests());
+    if (_rtu->pendingRequests() == 0) {
+        Error err = _rtu->addRequest((uint32_t)READ_HOLD_TOKEN, 1, READ_HOLD_REGISTER, FIRST_REGISTER, NUM_VALUES);
+        if (err!=SUCCESS) 
+        {
+            ModbusError e(err);
+            loge("Error creating READ_HOLD_REGISTER request: %02X - %s\n", (int)e, (const char *)e);
+        }
+        err = _rtu->addRequest((uint32_t)READ_COIL_TOKEN, 1, READ_COIL, 0, 8);
+        if (err!=SUCCESS) 
+        {
+            ModbusError e(err);
+            loge("Error creating READ_COIL request: %02X - %s\n", (int)e, (const char *)e);
+        }
     }
 }
 
 void RTUClient::writeCoil(int coil, int val){
+    logd("writeCoil, coil %d, val %d", coil, val);
     Error err = _rtu->addRequest((uint32_t)WRITE_COIL_TOKEN, 1, WRITE_COIL, coil, val);
     if (err!=SUCCESS) 
     {
@@ -72,6 +77,7 @@ void RTUClient::writeCoil(int coil, int val){
 }
 
 void RTUClient::deviceIdentification(){
+    logd("deviceIdentification");
     ModbusMessage m;
     Error rc = SUCCESS;
     uint8_t aob[3] = {0x0E, 0x01, 0x00};
@@ -82,6 +88,11 @@ void RTUClient::deviceIdentification(){
         ModbusError e(err);
         loge("Error creating request: %02X - %s\n", (int)e, (const char *)e);
     }
+}
+
+void RTUClient::reset(){
+    logd("reset");
+    _rtu->resetCounts();
 }
 
 } // namespace TS45ToMQTT

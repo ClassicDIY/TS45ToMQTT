@@ -7,6 +7,7 @@
 #define STR_LEN 255                            // general string buffer size
 #define CONFIG_LEN 32                         // configuration string buffer size
 #define NUMBER_CONFIG_LEN 6
+#define MQTT_TOPIC_LEN 128
 #define AP_TIMEOUT 30000
 #define MAX_PUBLISH_RATE 30000
 #define MIN_PUBLISH_RATE 1000

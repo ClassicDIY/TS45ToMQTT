@@ -14,8 +14,8 @@ char _mqttPort[NUMBER_CONFIG_LEN];
 char _mqttUserName[IOTWEBCONF_WORD_LEN];
 char _mqttUserPassword[IOTWEBCONF_WORD_LEN];
 char _publishRateStr[NUMBER_CONFIG_LEN];
-char _willTopic[64];
-char _rootTopicPrefix[64];
+char _willTopic[MQTT_TOPIC_LEN];
+char _rootTopicPrefix[MQTT_TOPIC_LEN];
 iotwebconf::ParameterGroup Device_group = iotwebconf::ParameterGroup("DeviceGroup", "Device");
 iotwebconf::TextParameter deviceNameParam = iotwebconf::TextParameter("Device Name", "CC1", _deviceName, IOTWEBCONF_WORD_LEN);
 iotwebconf::ParameterGroup MQTT_group = iotwebconf::ParameterGroup("MQTT", "MQTT");
@@ -28,7 +28,7 @@ iotwebconf::NumberParameter wakePublishRateParam = iotwebconf::NumberParameter("
 void onMqttConnect(bool sessionPresent)
 {
 	logd("Connected to MQTT. Session present: %d", sessionPresent);
-	char buf[64];
+	char buf[MQTT_TOPIC_LEN];
 	sprintf(buf, "%s/cmnd/#", _rootTopicPrefix);
 	_mqttClient.subscribe(buf, 0);
 	_mqttClient.publish(_willTopic, 0, true, "Online", 6);
@@ -42,6 +42,7 @@ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason)
 	{
 		xTimerStart(mqttReconnectTimer, 0);
 	}
+	memset (_rootTopicPrefix, 0, MQTT_TOPIC_LEN);
 }
 
 void connectToMqtt()
@@ -357,7 +358,7 @@ void IOT::Publish(const char *subtopic, const char *value, boolean retained)
 {
 	if (_mqttClient.connected())
 	{
-		char buf[64];
+		char buf[MQTT_TOPIC_LEN];
 		sprintf(buf, "%s/stat/%s", _rootTopicPrefix, subtopic);
 		_mqttClient.publish(buf, 0, retained, value);
 	}

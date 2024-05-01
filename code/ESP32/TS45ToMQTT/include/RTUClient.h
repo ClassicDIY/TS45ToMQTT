@@ -17,6 +17,7 @@ class RTUClient
 	void readCoil(int coil);
 	void writeCoil(int coil, int val);
 	void deviceIdentification();
+	void reset();
 
  protected:
 
