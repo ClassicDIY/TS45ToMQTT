@@ -2,7 +2,6 @@
 #include <SPI.h>
 
 #include "Log.h"
-#include "Enumerations.h"
 #include "IOT.h"
 #include "ModbusClientRTU.h"
 #include "TS45.h"

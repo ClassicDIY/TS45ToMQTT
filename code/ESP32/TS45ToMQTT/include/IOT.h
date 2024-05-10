@@ -10,7 +10,6 @@
 #include <IotWebConfUsing.h>
 #include <IotWebConfESP32HTTPUpdateServer.h>
 #include "Defines.h"
-#include "Enumerations.h"
 #include "IOTCallbackInterface.h"
 #include "MQTTCommandInterface.h"
 

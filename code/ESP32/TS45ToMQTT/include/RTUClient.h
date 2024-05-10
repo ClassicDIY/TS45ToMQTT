@@ -1,6 +1,5 @@
 #pragma once
 #include "Arduino.h"
-#include "Enumerations.h"
 #include "ModbusClientRTU.h"
 #include "RTUCallbackInterface.h"
 

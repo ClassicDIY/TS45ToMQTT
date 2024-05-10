@@ -2,7 +2,6 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include "log.h"
-#include "Enumerations.h"
 #include "IOTCallbackInterface.h"
 #include "Defines.h"
 #include "RTUCallbackInterface.h"
